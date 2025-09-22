@@ -34,18 +34,21 @@
         <div id="apps" class="vstack gap-3"></div>
     </div>
     <script>
-        (async function () {
-            const res = await api("/me/applications");
+        async function loadApplications() {
+            const res = await api("/users");
             if (!res.ok) { if (res.status === 401) location.href = "/login.html"; return; }
             const data = await res.json();
             const el = document.getElementById("apps");
-            el.innerHTML = data.map(a => `
+            application = data.applications;
+            console.log(data.applications);
+            el.innerHTML = application.map(a => `
         <div class="border rounded p-3">
-          <div><strong>Status:</strong> <span class="badge text-bg-secondary">${a.status}</span></div>
-          <div class="small mt-1"><a href="/job.html?id=${a.job_id}">View job</a></div>
-        </div>
+          <div><strong>Status:</strong> <span class="badge text-bg-secondary">${a}</span></div>
+          <div class="small mt-1"><a href="/offer.html?id=${a}">View job</a></div>
+        </div>  
       `).join("");
-        })();
+        }
+        document.addEventListener("DOMContentLoaded", loadApplications);
     </script>
 </body>
 

@@ -44,7 +44,7 @@
             e.preventDefault();
             const id = qs("id");
             const note = new FormData(e.target).get("note") || null;
-            const res = await api(`/offers/${id}/applications`, {
+            const res = await api(`/offers/${id}/apply`, {
                 method: "POST",
                 headers: { "Content-Type": "application/json" },
                 body: JSON.stringify({ note })

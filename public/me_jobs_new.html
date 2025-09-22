@@ -34,21 +34,16 @@
         <h3 class="mb-3">Create Job</h3>
         <form id="jobForm" class="row g-3">
             <div class="col-md-6"><input class="form-control" name="title" placeholder="Title" required></div>
-            <div class="col-md-6"><input class="form-control" name="role" placeholder="Role (e.g., waiter)" required>
+            <div class="col-md-6"><input class="form-control" name="location" placeholder="Location" required></div>
+            <div class="col-md-4"><input class="form-control" name="salary" type="number" step="0.01"
+                    placeholder="Salary" required></div>
+            <div class="col-md-6"><input class="form-control" name="requirements" placeholder="Requirements" required>
             </div>
             <div class="col-12"><textarea class="form-control" name="description" placeholder="Description"></textarea>
             </div>
-            <div class="col-md-6"><input class="form-control" name="date_start" type="datetime-local" required></div>
-            <div class="col-md-6"><input class="form-control" name="date_end" type="datetime-local" required></div>
-            <div class="col-md-4">
-                <select class="form-select" name="pay_type">
-                    <option value="hourly">Hourly</option>
-                    <option value="fixed">Fixed</option>
-                </select>
-            </div>
-            <div class="col-md-4"><input class="form-control" name="pay_amount" type="number" step="0.01"
-                    placeholder="Amount" required></div>
-            <div class="col-md-4"><input class="form-control" name="city" placeholder="City"></div>
+            <div class="col-md-6"><input class="form-control" name="start_date" type="datetime-local" required></div>
+            <div class="col-md-6"><input class="form-control" name="end_date" type="datetime-local" required></div>
+
             <div class="col-12"><button class="btn btn-dark">Create</button></div>
             <div id="jobMsg" class="small mt-2"></div>
         </form>
@@ -58,12 +53,12 @@
         document.getElementById("jobForm").addEventListener("submit", async (e) => {
             e.preventDefault();
             const fd = new FormData(e.target);
-            const body = JSON.stringify(Object.fromEntries(fd.entries()));
-            const res = await api("/jobs", { method: "POST", headers: { "Content-Type": "application/json" }, body });
+            const body = JSON.stringify({ ...Object.fromEntries(fd.entries()) });
+            const res = await api("/offers", { method: "POST", headers: { "Content-Type": "application/json" }, body });
             const msg = document.getElementById("jobMsg");
             if (res.status === 201 || res.ok) {
                 msg.className = "text-success small mt-2"; msg.textContent = "Job created!";
-                setTimeout(() => location.href = "/jobs.html", 600);
+                setTimeout(() => location.href = "/offers.html", 600);
             } else if (res.status === 403) {
                 msg.className = "text-danger small mt-2"; msg.textContent = "Employers only.";
             } else if (res.status === 401) {

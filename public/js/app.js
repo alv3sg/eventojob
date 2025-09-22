@@ -38,7 +38,7 @@ if (typeof localStorage !== 'undefined') {
 
 async function getMe() {
     try {
-        const res = await api("/me");
+        const res = await api("/users");
         if (!res.ok) return null;
         return await res.json();
     } catch (error) {

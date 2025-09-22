@@ -18,7 +18,6 @@ class CreateUserRequest(BaseModel):
 
 
 class CreateOfferRequest(BaseModel):
-    user_id: str
     title: str
     location: str
     salary: int

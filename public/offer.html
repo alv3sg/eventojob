@@ -1,13 +1,14 @@
 <!doctype html>
 <html>
-<!-- Bootstrap & base head -->
-<meta charset="utf-8">
-<meta name="viewport" content="width=device-width, initial-scale=1">
-<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
-<link href="/css/styles.css" rel="stylesheet">
-<script defer src="/js/app.js"></script>
 
 <head>
+    <!-- Bootstrap & base head -->
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link href="/css/styles.css" rel="stylesheet">
+    <script defer src="/js/app.js"></script>
+
     <title>Offer</title><!-- head shared -->
 </head>
 
@@ -33,21 +34,52 @@
     <div class="container" id="offer"></div>
 
     <script>
-        (async function () {
+        async function loadOffer() {
+            const container = document.getElementById("offer");
             const id = qs("id");
-            const res = await api(`/offers/${id}`);
-            if (!res.ok) { document.getElementById("offer").textContent = "Not found."; return; }
-            const j = await res.json();
-            document.getElementById("offer").innerHTML = `
-        <h2>${j.title}</h2>
-        <p class="text-muted">${j.role} · ${j.city ?? ""}</p>
-        <p>${j.description ?? ""}</p>
-        <p><strong>When:</strong> ${new Date(j.date_start).toLocaleString()} → ${new Date(j.date_end).toLocaleString()}</p>
-        <p><strong>Pay:</strong> ${j.pay_type === "hourly" ? fmtMoney(j.pay_amount) + "/h" : fmtMoney(j.pay_amount) + " fixed"}</p>
-        ${j.status === "open" ? `<a class="btn btn-dark" href="/apply.html?id=${j.id}">Apply</a>` : `<span class="badge text-bg-secondary">Closed</span>`}
-      `;
-        })();
+            if (!id) { container.textContent = "Missing id."; return; }
+
+            try {
+                const res = await api(`/offers/${id}`);
+                if (res.status === 401) { location.href = "/login.html"; return; }
+                if (!res.ok) { container.textContent = "Not found."; return; }
+
+                const j = await res.json();
+
+                // Handle both shapes: id as string OR { value: string }
+                const offerId = typeof j.id === "string" ? j.id : (j.id && j.id.value);
+                // Your API nests details under description; fall back to root if you later flatten
+                const d = j.description || j;
+                console.log(d)
+                const title = d.title ?? "";
+                const location = d.location ?? "";
+                const desc = d.description ?? "";
+                const salary = d.salary ?? null;
+
+                const start = d.start_date ? new Date(d.start_date) : null;
+                const end = d.end_date ? new Date(d.end_date) : null;
+
+                // If you don't have a status, infer "open" if end date is in the future
+                const isOpen = j.status ? (j.status === "open") : (end ? end > new Date() : true);
+
+                container.innerHTML = `
+              <h2>${title}</h2>
+              ${desc ? `<p>${desc}</p>` : ""}
+              <p class="text-muted">${location}</p>
+              ${start && end ? `<p><strong>When:</strong> ${start.toLocaleString()} → ${end.toLocaleString()}</p>` : ""}
+              ${salary !== null ? `<p><strong>Pay:</strong> ${fmtMoney(salary)}</p>` : ""}
+              ${isOpen && offerId
+                        ? `<a class="btn btn-dark" href="/apply.html?id=${offerId}">Apply</a>`
+                        : `<span class="badge text-bg-secondary">Closed</span>`}
+            `;
+            } catch (err) {
+                console.error(err);
+                container.textContent = "Error loading offer.";
+            }
+        }
+        document.addEventListener("DOMContentLoaded", loadOffer);
     </script>
+
 </body>
 
 </html>

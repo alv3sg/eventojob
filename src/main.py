@@ -21,6 +21,9 @@ load_dotenv()
 origins = [
     "http://localhost:8080",
     "http://127.0.0.1:8080",
+    "http://localhost:80",
+    "http://127.0.0.1:80",
+
     # se usar outro host/porta para o front, adicione aqui
 ]
 
@@ -48,8 +51,8 @@ def create_app() -> FastAPI:
         CORSMiddleware,
         allow_origins=origins,
         allow_credentials=True,
-        allow_methods=["*"],
-        allow_headers=["*"],
+        allow_methods=["GET", "POST", "PUT", "PATCH", "DELETE", "OPTIONS"],
+        allow_headers=["Authorization", "Content-Type", "*"],
     )
 
     install_exception_handlers(app)

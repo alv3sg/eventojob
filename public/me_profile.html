@@ -41,7 +41,7 @@
     </div>
     <script>
         (async function () {
-            const res = await api("/me");
+            const res = await api("/users");
             if (!res.ok) { if (res.status === 401) location.href = "/login.html"; return; }
             const me = await res.json();
             const f = document.getElementById("profileForm");
@@ -57,7 +57,7 @@
                 phone: fd.get("phone"),
                 skills: (fd.get("skills") || "").split(",").map(s => s.trim()).filter(Boolean),
             };
-            const res = await api("/me", { method: "PATCH", headers: { "Content-Type": "application/json" }, body: JSON.stringify(payload) });
+            const res = await api("/users", { method: "PATCH", headers: { "Content-Type": "application/json" }, body: JSON.stringify(payload) });
             const msg = document.getElementById("profMsg");
             msg.className = res.ok ? "text-success small mt-2" : "text-danger small mt-2";
             msg.textContent = res.ok ? "Updated!" : "Update failed.";

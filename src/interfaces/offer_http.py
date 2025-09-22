@@ -20,11 +20,12 @@ def create_offer(
     body: CreateOfferRequest,
     user_repo=Depends(get_user_repo),
     offer_repo=Depends(get_offer_repo),
+    current_user=Depends(require_auth)
 ):
     try:
         uc = CreateOffer(users=user_repo, offers=offer_repo)
         offer = uc.execute(
-            user_id=Id(body.user_id),
+            user_id=Id(current_user.user_id),
             title=body.title,
             requirements=body.requirements,
             description=body.description,
