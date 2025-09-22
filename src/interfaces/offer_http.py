@@ -49,7 +49,7 @@ def get_offer(
     try:
         offer = GetOffer(offers=offer_repo).execute(offer_id=offer_id)
         return OfferResponse(
-            id=Id(offer.id),
+            id=Id(offer.id.value),
             description={
                 "title": offer.description.title,
                 "location": offer.description.location,
@@ -72,7 +72,7 @@ def get_offers(
     try:
         offers = GetOffers(offers=offer_repo).execute()
         return [OfferResponse(
-            id=Id(offer.id),
+            id=Id(offer.id.value),
             description={
                 "title": offer.description.title,
                 "location": offer.description.location,
@@ -84,5 +84,20 @@ def get_offers(
             },
             applications=[str(app) for app in offer.applications],
         ) for offer in offers]
+    except Exception as e:
+        raise e
+
+
+@router.post("/{offer_id}/apply", status_code=status.HTTP_201_CREATED)
+def apply_offer(
+    offer_id: str,
+    offer_repo=Depends(get_offer_repo),
+    user_repo=Depends(get_user_repo),
+    current_user=Depends(require_auth)
+):
+    try:
+        offer = ApplyOffer(offers=offer_repo, users=user_repo).execute(
+            offer_id=offer_id, user_id=current_user.user_id)
+        return offer
     except Exception as e:
         raise e

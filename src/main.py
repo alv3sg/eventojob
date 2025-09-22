@@ -35,8 +35,6 @@ def create_app() -> FastAPI:
                        tags=["users"], dependencies=[Depends(require_auth)])
     app.include_router(offers_router, prefix="/v1",
                        tags=["offers"], dependencies=[Depends(require_auth)])
-    app.include_router(apply_router, prefix="/v1",
-                       tags=["apply"], dependencies=[Depends(require_auth)])
     app.include_router(auth_router, prefix="/v1", tags=["auth"])
 
     install_exception_handlers(app)
