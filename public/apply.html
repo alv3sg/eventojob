@@ -8,7 +8,7 @@
 <script defer src="/js/app.js"></script>
 
 <head>
-    <title>Apply</title><!-- head shared -->
+    <title>Aplicar</title><!-- head shared -->
 </head>
 
 <body>
@@ -21,7 +21,7 @@
             </button>
             <div id="nav" class="collapse navbar-collapse">
                 <ul class="navbar-nav me-auto">
-                    <li class="nav-item"><a class="nav-link" href="/offers.html">Offers</a></li>
+                    <li class="nav-item"><a class="nav-link" href="/offers.html">Ofertas</a></li>
                 </ul>
                 <ul class="navbar-nav ms-auto" id="nav-right">
                     <!-- filled by app.js: login/register OR user menu -->
@@ -31,10 +31,10 @@
     </nav>
 
     <div class="container" style="max-width:560px;">
-        <h3 class="mb-3">Apply to job</h3>
+        <h3 class="mb-3">Aplicar para o emprego</h3>
         <form id="applyForm" class="vstack gap-3">
-            <textarea class="form-control" name="note" placeholder="Optional note to employer"></textarea>
-            <button class="btn btn-dark">Submit application</button>
+            <textarea class="form-control" name="note" placeholder="Nota opcional para o empregador"></textarea>
+            <button class="btn btn-dark">Enviar aplicação</button>
             <div id="applyMsg" class="small mt-2"></div>
         </form>
     </div>
@@ -52,16 +52,16 @@
             const msg = document.getElementById("applyMsg");
             if (res.status === 201) {
                 msg.className = "text-success small mt-2";
-                msg.textContent = "Application sent!";
+                msg.textContent = "Aplicação enviada!";
                 setTimeout(() => location.href = "/me_applications.html", 600);
             } else if (res.status === 409) {
                 msg.className = "text-warning small mt-2";
-                msg.textContent = "You already applied.";
+                msg.textContent = "Você já se candidatou.";
             } else if (res.status === 401) {
                 location.href = "/login.html";
             } else {
                 msg.className = "text-danger small mt-2";
-                msg.textContent = "Could not apply.";
+                msg.textContent = "Não foi possível se candidatar.";
             }
         });
     </script>

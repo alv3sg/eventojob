@@ -8,7 +8,7 @@
 <script defer src="/js/app.js"></script>
 
 <head>
-    <title>Register</title><!-- head shared -->
+    <title>Cadastro</title><!-- head shared -->
 </head>
 
 <body>
@@ -21,7 +21,7 @@
             </button>
             <div id="nav" class="collapse navbar-collapse">
                 <ul class="navbar-nav me-auto">
-                    <li class="nav-item"><a class="nav-link" href="/offers.html">Offers</a></li>
+                    <li class="nav-item"><a class="nav-link" href="/offers.html">Ofertas</a></li>
                 </ul>
                 <ul class="navbar-nav ms-auto" id="nav-right">
                     <!-- filled by app.js: login/register OR user menu -->
@@ -31,16 +31,17 @@
     </nav>
 
     <div class="container" style="max-width:520px;">
-        <h2 class="mb-3">Create account</h2>
+        <h2 class="mb-3">Cadastro</h2>
         <form id="regForm" class="vstack gap-3">
             <input class="form-control" name="email" type="email" placeholder="Email" required>
-            <input class="form-control" name="password" type="password" placeholder="Password" required>
-            <input class="form-control" name="first_name" placeholder="First name" required>
-            <input class="form-control" name="last_name" placeholder="Last name" required>
-            <input class="form-control" name="phone" placeholder="Phone" required>
-            <input class="form-control" name="roles" placeholder="Roles" required multiple>
-            <input class="form-control" name="skills" placeholder="Skills" required multiple>
-            <button class="btn btn-dark w-100">Register</button>
+            <input class="form-control" name="password" type="password" placeholder="Senha" required>
+            <input class="form-control" name="first_name" placeholder="Nome" required>
+            <input class="form-control" name="last_name" placeholder="Sobrenome" required>
+            <input class="form-control" name="phone" placeholder="Telefone" required>
+            <input class="form-control" name="roles" placeholder="Cargos (separados por vírgula)" required multiple>
+            <input class="form-control" name="skills" placeholder="Habilidades (separadas por vírgula)" required
+                multiple>
+            <button class="btn btn-dark w-100">Cadastrar</button>
             <div id="regErr" class="text-danger small mt-2"></div>
         </form>
     </div>
