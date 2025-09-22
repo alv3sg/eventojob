@@ -7,6 +7,12 @@ services:
       - mongo_data:/data/db
     environment:
       MONGO_INITDB_DATABASE: gtd_app
-
+  web:
+    image: nginx:1.27-alpine
+    ports:
+      - "8080:80"
+    volumes:
+      # Serve your static site from ./public
+      - ./public:/usr/share/nginx/html:ro
 volumes:
   mongo_data:

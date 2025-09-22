@@ -1,4 +1,4 @@
-# Documentação do Sistema FreeJob
+# Documentação do Sistema EventoJob
 
 ## Índice
 1. [Visão Geral](#visão-geral)
@@ -12,7 +12,7 @@
 
 ## Visão Geral
 
-O FreeJob é uma plataforma de recrutamento online que conecta candidatos a vagas de emprego. O sistema foi desenvolvido seguindo os princípios da Clean Architecture, garantindo separação de responsabilidades e facilidade de manutenção.
+O EventoJob é uma plataforma de recrutamento online que conecta candidatos a vagas de emprego. O sistema foi desenvolvido seguindo os princípios da Clean Architecture, garantindo separação de responsabilidades e facilidade de manutenção.
 
 ### Principais Funcionalidades
 - Cadastro e autenticação de usuários
@@ -135,7 +135,7 @@ sequenceDiagram
    ```bash
    # Clonar repositório
    git clone [url-do-repositorio]
-   cd freejob
+   cd EventoJob
    
    # Criar ambiente virtual
    python -m venv .venv
@@ -217,32 +217,32 @@ pytest --cov=src tests/
 2. **Configuração da Aplicação**
    ```bash
    # Criar usuário para a aplicação
-   sudo useradd -m -d /opt/freejob freejob
-   sudo -u freejob bash -c 'cd /opt/freejob && python3 -m venv .venv'
+   sudo useradd -m -d /opt/EventoJob EventoJob
+   sudo -u EventoJob bash -c 'cd /opt/EventoJob && python3 -m venv .venv'
    
    # Copiar código
-   sudo -u freejob bash -c 'git clone [url-do-repositorio] /opt/freejob/src'
+   sudo -u EventoJob bash -c 'git clone [url-do-repositorio] /opt/EventoJob/src'
    
    # Instalar dependências
-   sudo -u freejob bash -c 'cd /opt/freejob/src && ../.venv/bin/pip install -r requirements.txt'
+   sudo -u EventoJob bash -c 'cd /opt/EventoJob/src && ../.venv/bin/pip install -r requirements.txt'
    
    # Configurar arquivo .env
-   sudo -u freejob cp /opt/freejob/src/.env.example /opt/freejob/src/.env
+   sudo -u EventoJob cp /opt/EventoJob/src/.env.example /opt/EventoJob/src/.env
    # Editar com as configurações de produção
    ```
 
 3. **Configuração do Systemd**
    ```ini
-   # /etc/systemd/system/freejob.service
+   # /etc/systemd/system/EventoJob.service
    [Unit]
-   Description=FreeJob API
+   Description=EventoJob API
    After=network.target
    
    [Service]
-   User=freejob
-   WorkingDirectory=/opt/freejob/src
-   Environment=PATH=/opt/freejob/.venv/bin:$PATH
-   ExecStart=/opt/freejob/.venv/bin/uvicorn src.main:app --host 0.0.0.0 --port 8000
+   User=EventoJob
+   WorkingDirectory=/opt/EventoJob/src
+   Environment=PATH=/opt/EventoJob/.venv/bin:$PATH
+   ExecStart=/opt/EventoJob/.venv/bin/uvicorn src.main:app --host 0.0.0.0 --port 8000
    Restart=always
    
    [Install]
@@ -268,8 +268,8 @@ pytest --cov=src tests/
 5. **Iniciar Serviços**
    ```bash
    sudo systemctl daemon-reload
-   sudo systemctl enable freejob
-   sudo systemctl start freejob
+   sudo systemctl enable EventoJob
+   sudo systemctl start EventoJob
    sudo systemctl restart nginx
    ```
 

@@ -19,7 +19,7 @@ load_dotenv()
 
 
 def create_app() -> FastAPI:
-    app = FastAPI(title="FreeJob")
+    app = FastAPI(title="EventoJob")
 
     # Infra adapters
     client = get_mongo_client(MongoSettings())

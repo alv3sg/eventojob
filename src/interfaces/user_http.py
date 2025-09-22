@@ -15,14 +15,14 @@ oauth2_scheme = OAuth2PasswordBearer(tokenUrl="token")
 # ----- Endpoints -----
 
 
-@router.get("/{user_id}", response_model=UserResponse)
+@router.get("", response_model=UserResponse)
 def get_user(
-    user_id: str,
     user_repo=Depends(get_user_repo),
+    current_user=Depends(require_auth),
 ):
     try:
         uc = GetUser(users=user_repo)
-        user = uc.execute(user_id=Id(user_id))
+        user = uc.execute(user_id=Id(current_user.user_id))
         return UserResponse(
             id=user.id,
             email=user.email.value,
@@ -41,7 +41,7 @@ def get_user(
         raise e
 
 
-@router.get("", response_model=list[UserResponse])
+@router.get("/all", response_model=list[UserResponse])
 def get_users(
     user_repo=Depends(get_user_repo),
 ):
