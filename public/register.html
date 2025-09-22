@@ -33,13 +33,13 @@
     <div class="container" style="max-width:520px;">
         <h2 class="mb-3">Create account</h2>
         <form id="regForm" class="vstack gap-3">
-            <input class="form-control" name="name" placeholder="Full name" required>
             <input class="form-control" name="email" type="email" placeholder="Email" required>
             <input class="form-control" name="password" type="password" placeholder="Password" required>
-            <select class="form-select" name="role">
-                <option value="worker">Worker</option>
-                <option value="employer">Employer</option>
-            </select>
+            <input class="form-control" name="first_name" placeholder="First name" required>
+            <input class="form-control" name="last_name" placeholder="Last name" required>
+            <input class="form-control" name="phone" placeholder="Phone" required>
+            <input class="form-control" name="roles" placeholder="Roles" required multiple>
+            <input class="form-control" name="skills" placeholder="Skills" required multiple>
             <button class="btn btn-dark w-100">Register</button>
             <div id="regErr" class="text-danger small mt-2"></div>
         </form>
@@ -50,16 +50,20 @@
             e.preventDefault();
             const fd = new FormData(e.target);
             const body = JSON.stringify({
-                name: fd.get("name"),
                 email: fd.get("email"),
                 password: fd.get("password"),
                 role: fd.get("role"),
+                name: fd.get("first_name"),
+                last_name: fd.get("last_name"),
+                phone: fd.get("phone"),
+                roles: Array.from(fd.getAll("roles")),
+                skills: Array.from(fd.getAll("skills")),
             });
-            const res = await api("/auth/register", { method: "POST", headers: { "Content-Type": "application/json" }, body });
+            const res = await api("/register", { method: "POST", headers: { "Content-Type": "application/json" }, body });
             if (!res.ok) { document.getElementById("regErr").textContent = "Registration failed."; return; }
             const data = await res.json();
             setAccessToken(data.access_token);
-            location.href = "/jobs.html";
+            location.href = "/offers.html";
         });
     </script>
 </body>

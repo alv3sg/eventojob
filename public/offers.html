@@ -45,7 +45,7 @@
             const f = new FormData(document.getElementById("filters"));
             if (f.get("role")) params.set("role", f.get("role"));
             if (f.get("city")) params.set("city", f.get("city"));
-            const res = await api(`/offers?status=open&${params.toString()}`);
+            const res = await api(`/offers`);
             const jobs = res.ok ? await res.json() : [];
             const list = document.getElementById("jobs");
             list.innerHTML = jobs.map(j => `

@@ -46,11 +46,13 @@
             e.preventDefault();
             const fd = new FormData(e.target);
             const body = JSON.stringify({ email: fd.get("email"), password: fd.get("password") });
-            const res = await api("/auth/login", { method: "POST", headers: { "Content-Type": "application/json" }, body });
+            const res = await api("/login", { method: "POST", headers: { "Content-Type": "application/json" }, body });
             if (!res.ok) { document.getElementById("loginErr").textContent = "Invalid credentials."; return; }
             const data = await res.json();
             setAccessToken(data.access_token);
-            location.href = "/jobs.html";
+            setRefreshToken(data.refresh_token);
+            setUser(data.user_id.value);
+            location.href = "/offers.html";
         });
     </script>
 </body>
