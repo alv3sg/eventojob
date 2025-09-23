@@ -18,7 +18,8 @@ O EventoJob é uma plataforma de recrutamento online que conecta candidatos a va
 - Cadastro e autenticação de usuários
 - Publicação de vagas de emprego
 - Candidatura a vagas
-- Gestão de perfis profissionais
+- Ver vagas quais se candidatou
+- Ver quantas pessoas se candidatou para a vaga
 - Sistema de autenticação seguro com JWT
 
 ### Tecnologias Principais
@@ -42,7 +43,19 @@ src/
          └── db/  # Configurações do banco de dados
 └── infrastructure/  # Implementações concretas
 ```
-
+public/
+apply.html # Página para candidaturas
+index.html # Landing page
+login.html # Página de login
+me_applications.html # Página para listar aplicações a candidaturas
+me_jobs_new.html # Página para criar novas ofertas
+me_profile.html # Página para ver o própio perfil
+offer.html # Página para aplicar para uma vaga especifica
+offers.html # Página para listar todas as ofertas
+register.html # Página de registro
+├── js/      # Casos de uso e portas
+      app.js # conexão com backend
+      
 ### Camadas da Aplicação
 
 1. **Domínio**
@@ -137,24 +150,8 @@ sequenceDiagram
    git clone [url-do-repositorio]
    cd EventoJob
    
-   # Criar ambiente virtual
-   python -m venv .venv
-   source .venv/bin/activate  # Linux/Mac
-   # ou
-   .venv\Scripts\activate    # Windows
-   
-   # Instalar dependências
-   pip install -r requirements.txt
-   
-   # Configurar variáveis de ambiente
-   cp .env.example .env
-   # Editar .env com suas configurações
-   ```
-
-3. **Executando a Aplicação**
-   ```bash
-   # Iniciar servidor de desenvolvimento
-   uvicorn src.main:app --reload
+   # Execute o docker-compose
+   docker-compose up -d --build
    ```
 
 ### Estrutura de Código
@@ -194,84 +191,6 @@ pytest --cov=src tests/
 - MongoDB 5.0+
 - Python 3.10+
 - Nginx (opcional, para produção)
-
-### Passos para Implantação
-
-1. **Preparação do Servidor**
-   ```bash
-   # Atualizar sistema
-   sudo apt update && sudo apt upgrade -y
-   
-   # Instalar dependências
-   sudo apt install -y python3-pip python3-venv nginx
-   
-   # Instalar MongoDB
-   wget -qO - https://www.mongodb.org/static/pgp/server-5.0.asc | sudo apt-key add -
-   echo "deb [ arch=amd64,arm64 ] https://repo.mongodb.org/apt/ubuntu focal/mongodb-org/5.0 multiverse" | sudo tee /etc/apt/sources.list.d/mongodb-org-5.0.list
-   sudo apt update
-   sudo apt install -y mongodb-org
-   sudo systemctl start mongod
-   sudo systemctl enable mongod
-   ```
-
-2. **Configuração da Aplicação**
-   ```bash
-   # Criar usuário para a aplicação
-   sudo useradd -m -d /opt/EventoJob EventoJob
-   sudo -u EventoJob bash -c 'cd /opt/EventoJob && python3 -m venv .venv'
-   
-   # Copiar código
-   sudo -u EventoJob bash -c 'git clone [url-do-repositorio] /opt/EventoJob/src'
-   
-   # Instalar dependências
-   sudo -u EventoJob bash -c 'cd /opt/EventoJob/src && ../.venv/bin/pip install -r requirements.txt'
-   
-   # Configurar arquivo .env
-   sudo -u EventoJob cp /opt/EventoJob/src/.env.example /opt/EventoJob/src/.env
-   # Editar com as configurações de produção
-   ```
-
-3. **Configuração do Systemd**
-   ```ini
-   # /etc/systemd/system/EventoJob.service
-   [Unit]
-   Description=EventoJob API
-   After=network.target
-   
-   [Service]
-   User=EventoJob
-   WorkingDirectory=/opt/EventoJob/src
-   Environment=PATH=/opt/EventoJob/.venv/bin:$PATH
-   ExecStart=/opt/EventoJob/.venv/bin/uvicorn src.main:app --host 0.0.0.0 --port 8000
-   Restart=always
-   
-   [Install]
-   WantedBy=multi-user.target
-   ```
-
-4. **Configuração do Nginx (opcional)**
-   ```nginx
-   server {
-       listen 80;
-       server_name seu-dominio.com;
-       
-       location / {
-           proxy_pass http://localhost:8000;
-           proxy_set_header Host $host;
-           proxy_set_header X-Real-IP $remote_addr;
-           proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;
-           proxy_set_header X-Forwarded-Proto $scheme;
-       }
-   }
-   ```
-
-5. **Iniciar Serviços**
-   ```bash
-   sudo systemctl daemon-reload
-   sudo systemctl enable EventoJob
-   sudo systemctl start EventoJob
-   sudo systemctl restart nginx
-   ```
 
 ## Segurança
 
@@ -392,5 +311,5 @@ Abra uma issue no repositório do projeto ou entre em contato com nossa equipe d
 
 ---
 
-Documentação atualizada em: 20/09/2023  
+Documentação atualizada em: 23/09/2025  
 Versão: 1.0.0
