@@ -7,6 +7,19 @@ services:
       - mongo_data:/data/db
     environment:
       MONGO_INITDB_DATABASE: gtd_app
+  backend:
+    build:
+      context: .
+      dockerfile: src/Dockerfile.dev
+    command: uvicorn main:app --host 0.0.0.0 --port 8000 --reload
+    ports:
+      - "8000:8000"
+    depends_on:
+      - mongo
+    environment:
+      MONGO_URI: mongodb://mongo:27017
+      SECRET_KEY: "61dcd903346428b1f80ab6b5193016926989a5deb222f031dac7804c98a1f252"
+
   web:
     image: nginx:1.27-alpine
     ports:
