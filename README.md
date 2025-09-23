@@ -42,19 +42,20 @@ src/
     └── infrastructure/
          └── db/  # Configurações do banco de dados
 └── infrastructure/  # Implementações concretas
+└── public/
+    └── apply.html # Página para candidaturas
+    └── index.html # Landing page
+    └── login.html # Página de login
+    └── me_applications.html # Página para listar aplicações a candidaturas
+    └── me_jobs_new.html # Página para criar novas ofertas
+    └── me_profile.html # Página para ver o própio perfil
+    └── offer.html # Página para aplicar para uma vaga especifica
+    └── offers.html # Página para listar todas as ofertas
+    └── register.html # Página de registro
+    └── js/      # Casos de uso e portas
+        └── app.js # conexão com backend
 ```
-public/
-apply.html # Página para candidaturas
-index.html # Landing page
-login.html # Página de login
-me_applications.html # Página para listar aplicações a candidaturas
-me_jobs_new.html # Página para criar novas ofertas
-me_profile.html # Página para ver o própio perfil
-offer.html # Página para aplicar para uma vaga especifica
-offers.html # Página para listar todas as ofertas
-register.html # Página de registro
-├── js/      # Casos de uso e portas
-      app.js # conexão com backend
+
       
 ### Camadas da Aplicação
 
