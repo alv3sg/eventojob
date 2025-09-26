@@ -32,20 +32,20 @@
 
     <div class="container">
         <h2 class="mb-3">Ofertas</h2>
-        <form id="filters" class="row g-2 mb-3">
+        <!-- <form id="filters" class="row g-2 mb-3">
             <div class="col-md-3"><input class="form-control" name="role" placeholder="Cargo (e.g., waiter)"></div>
             <div class="col-md-3"><input class="form-control" name="city" placeholder="Cidade"></div>
             <div class="col-md-2"><button class="btn btn-outline-dark w-100">Filtrar</button></div>
-        </form>
+        </form> -->
         <div id="offers" class="vstack gap-3"></div>
     </div>
 
     <script>
         async function loadOffers() {
-            const params = new URLSearchParams();
-            const f = new FormData(document.getElementById("filters"));
-            if (f.get("role")) params.set("role", f.get("role"));
-            if (f.get("city")) params.set("city", f.get("city"));
+            // const params = new URLSearchParams();
+            // const f = new FormData(document.getElementById("filters"));
+            // if (f.get("role")) params.set("role", f.get("role"));
+            // if (f.get("city")) params.set("city", f.get("city"));
             const res = await api(`/offers`);
             const jobs = res.ok ? await res.json() : [];
             console.log(jobs)
@@ -68,7 +68,7 @@
                     `;
             }).join("");
         }
-        document.getElementById("filters").addEventListener("submit", e => { e.preventDefault(); loadOffers(); });
+        // document.getElementById("filters").addEventListener("submit", e => { e.preventDefault(); loadOffers(); });
         document.addEventListener("DOMContentLoaded", loadOffers);
     </script>
 </body>
