@@ -46,7 +46,22 @@ async function getMe() {
         return null;
     }
 }
-
+async function logout() {
+    try {
+        await api("/logout", {
+            method: "POST",
+            credentials: "include",
+            headers: { "Content-Type": "application/json", "Accept": "application/json" },
+            body: JSON.stringify({ refresh_token: REFRESH_TOKEN })
+        });
+        setAccessToken(null);
+        setRefreshToken(null);
+        setUser(null);
+        location.href = "/index.html";
+    } catch (error) {
+        console.error('Error logging out:', error);
+    }
+}
 async function renderNav() {
     const navRight = document.getElementById("nav-right");
     if (!navRight) return;
@@ -68,12 +83,14 @@ async function renderNav() {
             <li class="nav-item">
                 <a class="nav-link" href="/me_applications.html">My Applications</a>
             </li>
-            ${me.role === "employer" ? `
-                <li class="nav-item">
-                    <a class="nav-link" href="/me_jobs_new.html">Post a Job</a>
-                </li>` : ''}
+            <li class="nav-item">
+                <a class="nav-link" href="/me_jobs_new.html">Post a Job</a>
+            </li>
             <li class="nav-item">
                 <a class="nav-link" href="/me_profile.html">Profile</a>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link" href="#" onclick="logout()">Logout</a>
             </li>`;
     } catch (error) {
         console.error('Error rendering navigation:', error);
