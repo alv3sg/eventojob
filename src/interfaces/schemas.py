@@ -63,6 +63,7 @@ class CreateUserResponse(BaseModel):
 
 class OfferResponse(BaseModel):
     id: Id
+    user_id: Id
     description: OfferDescription
     applications: list[str]
 

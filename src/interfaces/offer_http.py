@@ -51,6 +51,7 @@ def get_offer(
         offer = GetOffer(offers=offer_repo).execute(offer_id=offer_id)
         return OfferResponse(
             id=Id(offer.id.value),
+            user_id=Id(offer.user_id.value),
             description={
                 "title": offer.description.title,
                 "location": offer.description.location,
@@ -74,6 +75,7 @@ def get_offers(
         offers = GetOffers(offers=offer_repo).execute()
         return [OfferResponse(
             id=Id(offer.id.value),
+            user_id=Id(offer.user_id.value),
             description={
                 "title": offer.description.title,
                 "location": offer.description.location,
