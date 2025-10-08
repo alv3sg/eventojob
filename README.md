@@ -1,316 +1,104 @@
-# Documentação do Sistema EventoJob
-
-## Índice
-1. [Visão Geral](#visão-geral)
-2. [Arquitetura do Sistema](#arquitetura-do-sistema)
-3. [Fluxo de Dados](#fluxo-de-dados)
-4. [Guia do Desenvolvedor](#guia-do-desenvolvedor)
-5. [Guia de Implantação](#guia-de-implantação)
-6. [Segurança](#segurança)
-7. [Referência da API](#referência-da-api)
-8. [FAQ](#faq)
-
-## Visão Geral
-
-O EventoJob é uma plataforma de recrutamento online que conecta candidatos a vagas de emprego. O sistema foi desenvolvido seguindo os princípios da Clean Architecture, garantindo separação de responsabilidades e facilidade de manutenção.
-
-### Principais Funcionalidades
-- Cadastro e autenticação de usuários
-- Publicação de vagas de emprego
-- Candidatura a vagas
-- Ver vagas quais se candidatou
-- Ver quantas pessoas se candidatou para a vaga
-- Sistema de autenticação seguro com JWT
-
-### Tecnologias Principais
-- **Backend**: Python 3.10+
-- **Framework Web**: FastAPI
-- **Banco de Dados**: MongoDB
-- **Autenticação**: JWT + Refresh Tokens
-- **Hash de Senhas**: Argon2
-- **Testes**: pytest (recomendado)
-
-## Arquitetura do Sistema
-
-### Estrutura de Diretórios
-```
-src/
-├── application/      # Casos de uso e portas
-├── domain/          # Entidades e regras de negócio
-├── interfaces/      # Controladores HTTP e schemas
-└── core/
-    └── infrastructure/
-         └── db/  # Configurações do banco de dados
-└── infrastructure/  # Implementações concretas
-└── public/
-    └── apply.html # Página para candidaturas
-    └── index.html # Landing page
-    └── login.html # Página de login
-    └── me_applications.html # Página para listar aplicações a candidaturas
-    └── me_jobs_new.html # Página para criar novas ofertas
-    └── me_profile.html # Página para ver o própio perfil
-    └── offer.html # Página para aplicar para uma vaga especifica
-    └── offers.html # Página para listar todas as ofertas
-    └── register.html # Página de registro
-    └── js/      # Casos de uso e portas
-        └── app.js # conexão com backend
-```
-
-      
-### Camadas da Aplicação
-
-1. **Domínio**
-   - Contém as regras de negócio centrais
-   - Entidades imutáveis e value objects
-   - Independente de frameworks e bibliotecas externas
-
-2. **Aplicação**
-   - Implementa os casos de uso do sistema
-   - Define interfaces (portas) para serviços externos
-   - Orquestra o fluxo de dados entre as camadas
-
-3. **Infraestrutura**
-   - Implementações concretas das portas definidas na camada de aplicação
-   - Acesso a banco de dados, serviços externos, etc.
-   - Configurações do sistema
-
-4. **Interfaces**
-   - Controladores HTTP (FastAPI)
-   - Schemas de validação de entrada/saída
-   - Documentação da API
-
-## Fluxo de Dados
-
-### 1. Autenticação
 ```mermaid
-sequenceDiagram
-    participant C as Cliente
-    participant A as API
-    participant U as Caso de Uso
-    participant R as Repositório
-    
-    C->>A: POST /auth/login {email, senha}
-    A->>U: Executa Login
-    U->>R: Busca usuário por email
-    R-->>U: Retorna usuário
-    U->>U: Valida senha
-    U->>R: Cria refresh token
-    U-->>A: Retorna tokens
-    A-->>C: 200 OK {access_token, refresh_token}
-```
+flowchart TD
+  subgraph SYS[🧩 SYSTEM Layer — Boot, Logs & Config]
+    subgraph SYS_BOOT[Bootstrap]
+      A1[index.js / init.js]
+      A2[setup_heartbeat()]
+      A3[handleKeyCode()]
+    end
 
-### 2. Publicação de Vaga
-```mermaid
-sequenceDiagram
-    participant C as Cliente
-    participant A as API
-    participant U as Caso de Uso
-    participant R as Repositório
-    
-    C->>A: POST /offers (com token)
-    A->>A: Valida token
-    A->>U: Executa CreateOffer
-    U->>R: Salva vaga
-    R-->>U: Confirmação
-    U-->>A: Dados da vaga
-    A-->>C: 201 Created
-```
+    subgraph SYS_LOG[Logging & Diagnostics]
+      L1[logger.js]
+      L2[LOG_LEVELS]
+      L3[debug_console / ampt.api.sendLog()]
+    end
 
-### 3. Candidatura a Vaga
-```mermaid
-sequenceDiagram
-    participant C as Candidato
-    participant A as API
-    participant U as Caso de Uso
-    participant RO as Repositório de Vagas
-    participant RU as Repositório de Usuários
-    
-    C->>A: POST /apply {offer_id}
-    A->>A: Extrai user_id do token
-    A->>U: Executa ApplyOffer
-    U->>RO: Busca vaga
-    U->>RU: Busca usuário
-    U->>RO: Adiciona candidatura
-    U->>RU: Atualiza histórico do usuário
-    U-->>A: Confirmação
-    A-->>C: 200 OK
-```
+    subgraph SYS_CONF[Config]
+      C1[config.js]
+      C2[Environment vars / feature flags]
+    end
 
-## Guia do Desenvolvedor
+    A1 --> A2 --> A3
+    L1 --> L3
+    C1 --> A1
+  end
 
-### Configuração do Ambiente
+  subgraph CORE[⚙️ CORE Layer — Data, Logic & Hardware]
+    subgraph CORE_API[API Layer]
+      B1[apiClient.js]
+      B2[movies.js / hotel.js / guest.js / messages.js]
+      B3[endpoints legacy adapter]
+    end
 
-1. **Pré-requisitos**
-   - Python 3.10+
-   - MongoDB 5.0+
-   - Git
+    subgraph CORE_LOGIC[Logic Layer]
+      D1[adsManager.js]
+      D2[cartManager.js]
+      D3[languageManager.js]
+      D4[messageService.js]
+    end
 
-2. **Configuração Inicial**
-   ```bash
-   # Clonar repositório
-   git clone [url-do-repositorio]
-   cd EventoJob
-   
-   # Execute o docker-compose
-   docker-compose up -d --build
-   ```
+    subgraph CORE_HARD[Hardware Layer]
+      E1[lgtv/player.js]
+      E2[lgtv/volume.js]
+      E3[lgtv/network.js]
+      E4[lgtv/watchdog.js]
+      E5[hcap_pretty.js (LG API)]
+    end
 
-### Estrutura de Código
+    subgraph CORE_STATE[State & Utils]
+      F1[globalState.js]
+      F2[storage.js]
+      F3[utils.js]
+    end
 
-#### Domínio
-- `entities.py`: Define as entidades principais (User, Offer, etc.)
-- `value_objects.py`: Objetos de valor (Email, PasswordHash, etc.)
-- `exceptions.py`: Exceções de domínio
+    B1 --> B2
+    F1 --> B1
+    D1 --> B2
+    D2 --> F2
+    D3 --> F1
+    D4 --> B2
+    E1 --> B2
+  end
 
-#### Aplicação
-- `ports/`: Interfaces para serviços externos
-- `use_cases/`: Implementações dos casos de uso
+  subgraph UI[🎨 UI Layer — Views & Modals]
+    subgraph UI_VIEWS[Views]
+      V1[homeView.js]
+      V2[entertainmentView.js]
+      V3[liveTvView.js]
+      V4[hotelView.js]
+      V5[accountView.js]
+      V6[messageView.js]
+      V7[languageView.js]
+    end
 
-#### Infraestrutura
-- `repositories/`: Implementações dos repositórios
-- `services/`: Serviços externos (email, storage, etc.)
+    subgraph UI_MODALS[Modals]
+      M1[cartModal.js]
+      M2[adultModal.js]
+    end
 
-#### Interfaces
-- `schemas/`: Schemas Pydantic para validação
-- `routers/`: Rotas da API
-- `middleware/`: Middlewares personalizados
+    subgraph UI_COMPONENTS[Components]
+      U1[loader.js]
+      U2[banner.js]
+      U3[navigation.js]
+    end
+  end
 
-### Testes
-
-```bash
-# Executar testes
-pytest tests/
-
-# Com cobertura de código
-pytest --cov=src tests/
-```
-
-## Guia de Implantação
-
-### Requisitos de Produção
-- Servidor Linux (Ubuntu 20.04+ recomendado)
-- MongoDB 5.0+
-- Python 3.10+
-- Nginx (opcional, para produção)
-
-## Segurança
-
-### Autenticação e Autorização
-- Tokens JWT com tempo de vida curto (30 minutos)
-- Refresh tokens com tempo de vida maior (7 dias)
-- Validação de escopo de acesso
-- Proteção contra CSRF
-
-### Armazenamento de Senhas
-- Uso de Argon2 para hashing de senhas
-- Salt único por usuário
-- Fatores de custo configuráveis
-
-### Boas Práticas
-- Validação de entrada em todas as camadas
-- Logging de operações sensíveis
-- Rate limiting em endpoints públicos
-- Headers de segurança HTTP
-
-## Referência da API
-
-### Autenticação
-
-#### Login
-```
-POST /v1/auth/login
-```
-**Request:**
-```json
-{
-  "email": "usuario@exemplo.com",
-  "password": "senha123"
-}
-```
-
-**Response (200 OK):**
-```json
-{
-  "access_token": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9...",
-  "refresh_token": "550e8400-e29b-41d4-a716-446655440000",
-  "token_type": "bearer",
-  "expires_in": 1800
-}
-```
-
-### Usuários
-
-#### Criar Usuário
-```
-POST /v1/users
-```
-**Request:**
-```json
-{
-  "email": "novo@usuario.com",
-  "password": "Senha@123"
-}
-```
-
-**Response (201 Created):**
-```json
-{
-  "id": "123e4567-e89b-12d3-a456-426614174000",
-  "email": "novo@usuario.com",
-  "status": "active",
-  "created_at": "2023-01-01T12:00:00Z"
-}
-```
-
-### Vagas
-
-#### Listar Vagas
-```
-GET /v1/offers?page=1&limit=10
-```
-
-**Response (200 OK):**
-```json
-{
-  "items": [
-    {
-      "id": "550e8400-e29b-41d4-a716-446655440000",
-      "title": "Desenvolvedor Python",
-      "location": "Remoto",
-      "salary": 10000,
-      "requirements": "Python, FastAPI, MongoDB",
-      "description": "Vaga para desenvolvedor backend...",
-      "status": "active",
-      "created_at": "2023-01-01T12:00:00Z"
-    }
-  ],
-  "total": 1,
-  "page": 1,
-  "pages": 1
-}
-```
-
-## FAQ
-
-### Como resetar uma senha?
-Atualmente, o sistema não possui um fluxo de recuperação de senha implementado. Entre em contato com o suporte para ajuda.
-
-### Posso ter mais de um cargo por empresa?
-Sim, você pode publicar quantas vagas forem necessárias. Cada vaga é independente.
-
-### Como faço para atualizar meus dados?
-Envie uma requisição PATCH para `/v1/users/me` com os campos que deseja atualizar.
-
-### Quais são os requisitos mínimos para o servidor?
-- 1 vCPU
-- 2GB RAM
-- 10GB de armazenamento
-- Ubuntu 20.04+
-
-### Como reportar um bug?
-Abra uma issue no repositório do projeto ou entre em contato com nossa equipe de suporte.
-
----
-
-Documentação atualizada em: 23/09/2025  
-Versão: 1.0.0
+  %% Relationships
+  A1 -->|init| F1
+  A1 -->|setup API| B1
+  A1 -->|bind events| V1
+  V1 --> D1
+  V2 --> D1
+  V3 --> E1
+  V4 --> B2
+  V5 --> D4
+  V6 --> D4
+  V7 --> D3
+  M1 --> D2
+  M2 --> D3
+  D1 --> B2
+  B2 --> F1
+  E1 --> L1
+  L1 --> L3
+  F2 --> L1
+  A3 --> V1
